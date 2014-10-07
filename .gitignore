@@ -1,4 +1,6 @@
 flask
+tmp 
+
 app.db
 *.pyc
 versions
