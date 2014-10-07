@@ -11,6 +11,7 @@ class User(db.Model):
 	added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 	email = db.Column(db.String(60), unique = True)
 	role = db.Column(db.SmallInteger, default = ROLE_USER)
+        items = db.relationship('Item', backref='author', lazy='dynamic')
 
 
 	def __repr__(self):
@@ -22,6 +23,7 @@ class Item(db.Model):
 	added_on = db.Column(db.DateTime)
 	added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 	description = db.Column(db.Text)
+        prices = db.relationship('Price', backref='prices', lazy='dynamic')
 
 	def __repr__(self):
 		return '<Item {}>'.format(self.name)
