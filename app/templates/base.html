@@ -10,6 +10,7 @@
   <body>
     <div>Жуковина: <a href="/index">Home</a>
     {% if g.user.is_authenticated() %}
+    | <a href="{{ url_for('user', login = g.user.login) }}">Your Profile</a>
     | <a href="{{ url_for('logout') }}">Logout</a>
     {% endif %}</div>
     <hr>

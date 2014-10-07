@@ -64,3 +64,17 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/user/<login>')
+@login_required
+def user(login):
+    user = User.query.filter_by(login = login).first()
+    if user == None:
+        flash('User {} not found'.format(login))
+        return redirect(url_for('index'))
+    items = [
+        {'author': user, 'body': 'Super-mega thing'}, 
+        {'author': user, 'body': 'Another one'}
+    ]
+    return render_template('user.html',
+        user = user,
+        items = items)
