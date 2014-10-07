@@ -1,3 +1,5 @@
 flask
 app.db
 *.pyc
+versions
+db_repository
