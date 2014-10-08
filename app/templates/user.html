@@ -1,0 +1,11 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+<h1>User: {{user.login}}</h1>
+<hr>
+{% for item in items %}
+<p>
+{{item.body}}
+</p>
+{% endfor %}
+{% endblock %}
