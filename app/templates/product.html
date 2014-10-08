@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <table>
+      <tr><td>Назва товару</td><td>{{product.name}}</td></tr>
+      <tr><td>Опис товару</td><td>{{product.description}}</td></tr>
+    <table><br/>
+    {% if is_admin %}
+      <form action="{{link_edit}}">
+        <input type="submit" value="редагувати"/>
+      </form>
+    {% endif %}
+{% endblock %}

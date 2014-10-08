@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <form action = "" method="post" name="product">
+    {{product.hidden_tag()}}
+    <table>
+      <tr><td>Назва товару</td><td>{{product.name}}</td></tr>
+      <tr><td>Опис товару</td><td>{{product.description}}</td></tr>
+    </table><br/>
+    <input type="submit" value="Зберігти"/>
+  </form>
+{% endblock %}

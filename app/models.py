@@ -15,18 +15,19 @@ class User(db.Model):
 
 
 	def __repr__(self):
-		return '<User {}>'.format(self.login)
+		return u'<User {}>'.format(self.login)
 
 class Item(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(120), index = True)
+        name_en = db.Column(db.String(120), index = True, unique = True, nullable=False)
 	added_on = db.Column(db.DateTime)
 	added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 	description = db.Column(db.Text)
         prices = db.relationship('Price', backref='prices', lazy='dynamic')
 
 	def __repr__(self):
-		return '<Item {}>'.format(self.name)
+		return u'<Item {}>'.format(self.name)
 
 
 class Price(db.Model):
@@ -37,4 +38,4 @@ class Price(db.Model):
 	price = db.Column(db.Integer, default = 0)
 
 	def __repr__(self):
-		return '<Price {}>'.format(self.price)
+		return u'<Price {}>'.format(self.price)
