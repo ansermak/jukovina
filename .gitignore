@@ -1,5 +1,6 @@
 tmp/
 db_repository/
+app/static/item_images/
 
 app.db
 *.pyc
