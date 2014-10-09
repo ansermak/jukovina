@@ -84,7 +84,7 @@ def product(product_en_name):
                 db.session.commit()
                 return redirect('/{}'.format(_prod.name_en))
             page = 'product_edit.html'
-            product_form = ProductForm(obj=product)
+            product_form = ProductForm(obj=product_obj)
             product_obj = product_form
         else:
             return redirect('/{}'.format(product_en_name))
@@ -102,9 +102,11 @@ def product(product_en_name):
 @login_required
 def index():
     user = g.user
+    product_list = Item.query.all()
     return render_template('index.html',
         title ='Home',
-        user = user)
+        user = user,
+        product_list=product_list)
 
 
 @app.route('/login', methods = ['GET', 'POST'])

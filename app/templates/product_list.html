@@ -1,0 +1,25 @@
+<div id="product_list">
+{% if product_list %}
+
+  {% for item in product_list%}
+  <a href="/{{item.name_en}}">
+    <div style="
+      border: 1px solid black;
+      display: block;
+      float: left;
+      height: 200px;
+      margin: 5px;
+      width: 200px;
+      ">
+      
+      {{item.name}}
+      {% if item.main_image %}
+        {{item.main_image}}
+      {% endif %}
+    </div>
+  </a>
+  {%endfor%}
+{% else %}
+<br/>  немає описів товарів<br/>
+{% endif %}
+</div>
