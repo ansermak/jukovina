@@ -1,7 +1,7 @@
 import os, sys
 basedir = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0,'../')
-from mail_settings import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
+from mail_settings import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_USE_TLS, MAIL_USE_SSL
+
 
 CSRF_ENABLED = True
 SECRET_KEY = 'you-will-never-guess'
@@ -17,10 +17,3 @@ OPENID_PROVIDERS = [
     { 'name': 'AOL', 'url': 'http://openid.aol.com/<username>' },
     { 'name': 'Flickr', 'url': 'http://www.flickr.com/<username>' },
     { 'name': 'MyOpenID', 'url': 'https://www.myopenid.com' }]
-
-#check mail_settings
-if MAIL_SERVER is None:
-	MAIL_SERVER = 'localhost'
-	MAIL_PORT = 25
-	MAIL_USERNAME = None
-	MAIL_PASSWORD = None

@@ -1,6 +1,6 @@
 tmp/
+db_repository/
 
 app.db
 *.pyc
 versions
-db_repository
