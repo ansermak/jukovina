@@ -13,6 +13,18 @@ class User(db.Model):
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     items = db.relationship('Item', backref='author', lazy='dynamic')
 
+    @staticmethod
+    def make_unique_login(login):
+        if User.query.filter_by(login = login).first() == None:
+            return login
+        version = 2
+        while True:
+            new_login = login + str(version)
+            if User.query.filter_by(login = new_login) == None:
+                break
+            version += 1
+        return new_login
+
     def is_authenticated(self):
         return True
 
