@@ -4,3 +4,4 @@ db_repository/
 app.db
 *.pyc
 versions
+mail_settings.py
