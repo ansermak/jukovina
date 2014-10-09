@@ -1,4 +1,6 @@
+from hashlib import md5
 from app import db, app
+
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
@@ -12,6 +14,22 @@ class User(db.Model):
     email = db.Column(db.String(60), unique = True)
     role = db.Column(db.SmallInteger, default = ROLE_USER)
     items = db.relationship('Item', backref='author', lazy='dynamic')
+
+    @staticmethod
+    def make_unique_login(login):
+        if User.query.filter_by(login = login).first() == None:
+            return login
+        version = 2
+        while True:
+            new_login = login + str(version)
+            if User.query.filter_by(login = new_login) == None:
+                break
+            version += 1
+        return new_login
+
+    def avatar(self, size):
+        return 'http://www.gravatar.com/avatar/{}?d=mm&s={}'.format(
+                md5(self.email).hexdigest(), str(size))
 
     def is_authenticated(self):
         return True
@@ -42,7 +60,6 @@ class Item(db.Model):
         return '<Item {}>'.format(self.name)
 
     def get_main_image_url(self):
-        print '================', self.name, self.image
         return '/{}/{}'.format(app.config['ITEM_IMAGE_FOLDER'], self.image)
 
 

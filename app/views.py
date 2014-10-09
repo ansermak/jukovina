@@ -38,6 +38,7 @@ def item_uniq_name(name):
     return rzlt
 
 @app.route('/new_product', methods=['GET', 'POST'])
+@login_required
 def new_product():
     if not HAS_RIGHTS:
         return render_template('parking_page.html',
@@ -63,6 +64,7 @@ def new_product():
 
 @app.route('/edit/<product_en_name>', methods=['GET', 'POST'])
 @app.route('/<product_en_name>', methods=['GET', 'POST'])
+@login_required
 def product(product_en_name):
     products = Item.query.filter(Item.name_en==product_en_name)
     product_c = products.count()
@@ -153,6 +155,7 @@ def after_login(resp):
         login = resp.nickname
         if login is None or login == '':
             login = resp.email.split('@')[0]
+        login = User.make_unique_login(login)    
         user = User(login = login, email = resp.email, role = ROLE_USER)
         db.session.add(user)
         db.session.commit()
@@ -184,3 +187,13 @@ def user(login):
     return render_template('user.html',
         user = user,
         items = items)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500

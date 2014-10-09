@@ -1,6 +1,7 @@
 tmp/
+db_repository/
 
 app.db
 *.pyc
 versions
-db_repository
+mail_settings.py
