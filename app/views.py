@@ -119,7 +119,7 @@ def product(product_en_name):
 
 @app.route('/')
 @app.route('/index')
-#@login_required
+@login_required
 def index():
     print '=============', app.root_path
     user = g.user
