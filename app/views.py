@@ -7,6 +7,8 @@ from forms import LoginForm, ProductForm
 from models import User, ROLE_USER, ROLE_ADMIN, Item
 from datetime import datetime
 from translit import transliterate
+from werkzeug import secure_filename
+import os
 
 @lm.user_loader
 def load_user(id):
@@ -47,6 +49,11 @@ def new_product():
                 description=product.description.data,
                 added_by=0,
                 added_on=datetime.utcnow())
+        file_image = request.files['image']
+        if file_image:
+            file_name = secure_filename(file_image.filename)
+            file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
+            _prod.image = file_name
         db.session.add(_prod)
         db.session.commit()
         return redirect('/{}'.format(_prod.name_en))
@@ -66,21 +73,34 @@ def product(product_en_name):
         pass
         ## log error - we have more than one item eith the same name_en
     product_obj = products[0]
-    print request.url_rule.rule
     edit_url = request.url_rule.rule.split('/')[1]
     if edit_url == 'edit':
         if HAS_RIGHTS:
             product_form = ProductForm()
             if product_form.validate_on_submit():
-                print 'validated'
-                _prod = Item(name=product_form.name.data,
-                        name_en=item_uniq_name(product_form.name.data),
-                        description=product_form.description.data,
-                        added_by=0,
-                        added_on=datetime.utcnow())
-                db.session.add(_prod)
+                modified = False
+                if product_obj.name != product_form.name.data:
+                    product_obj.name=product_form.name.data
+                    modified = True
+                    product_obj.name_en=item_uniq_name(product_form.name.data)
+                if product_obj.description != product_form.description.data:
+                    product_obj.description = product_form.description.data
+                    modified = True
+                if product_obj.image != product_form.image.data:
+                    if os.path.isfile(product_obj.image):
+                        os.remove(os.path.join(
+                            app.root_path, 
+                            app.config['ITEM_IMAGE_FOLDER'], 
+                            product_obj.image))
+                    modified = True
+                    file_image = request.files['image']
+                    if file_image:
+                        file_name = secure_filename(file_image.filename)
+                        file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
+                        product_obj.image = file_name
+                #db.session.add(_prod)
                 db.session.commit()
-                return redirect('/{}'.format(_prod.name_en))
+                return redirect('/{}'.format(product_obj.name_en))
             page = 'product_edit.html'
             product_form = ProductForm(obj=product_obj)
             product_obj = product_form
@@ -97,8 +117,9 @@ def product(product_en_name):
 
 @app.route('/')
 @app.route('/index')
-@login_required
+#@login_required
 def index():
+    print '=============', app.root_path
     user = g.user
     product_list = Item.query.all()
     return render_template('index.html',
@@ -143,11 +164,11 @@ def after_login(resp):
     return redirect(request.args.get('next') or ulr_for('index'))
 
 
-
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.route('/user/<login>')
 @login_required

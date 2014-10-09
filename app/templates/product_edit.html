@@ -1,10 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
-  <form action = "" method="post" name="product">
+<form action = "" method="post" name="product" enctype="multipart/form-data">
     {{product.hidden_tag()}}
     <table>
-      <tr><td>Назва товару</td><td>{{product.name}}</td></tr>
-      <tr><td>Опис товару</td><td>{{product.description}}</td></tr>
+      <tr><td>Назва товару</td><td>{{product.name}}</td>
+        <td>{% for error in product.errors.name %}
+                <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </td>
+      </tr>
+      <tr><td>Опис товару</td><td>{{product.description}}</td>
+        <td>{% for error in product.errors.description %}
+                <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </td>
+      <tr><td>Зображення товару</td><td>
+          {{product.image}}
+        </td>
+        <td>{% for error in product.errors.image %}
+                <span style="color: red;">[{{error}}]</span>
+            {% endfor %}<br>
+        </td>
+
+      </tr>
     </table><br/>
     <input type="submit" value="Зберігти"/>
   </form>

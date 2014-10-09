@@ -8,6 +8,9 @@ from config import basedir
 
 app = Flask(__name__)
 app.config.from_object('config')
+static_folder = app.config.get('STATIC_FOLDER1') 
+if static_folder is not None:
+    app.static_folder = static_folder
 db = SQLAlchemy(app)
 
 lm = LoginManager()

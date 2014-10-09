@@ -1,4 +1,4 @@
-from app import db
+from app import db, app
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
@@ -36,10 +36,20 @@ class Item(db.Model):
     added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     description = db.Column(db.Text)
     prices = db.relationship('Price', backref='prices', lazy='dynamic')
+    image = db.Column(db.String(255))
 
     def __repr__(self):
         return '<Item {}>'.format(self.name)
 
+    def get_main_image_url(self):
+        print '================', self.name, self.image
+        return '/{}/{}'.format(app.config['ITEM_IMAGE_FOLDER'], self.image)
+
+
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(255), index = True)
+    
 
 class Price(db.Model):
     id = db.Column(db.Integer, primary_key = True)
