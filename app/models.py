@@ -1,4 +1,6 @@
+from hashlib import md5
 from app import db
+
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
@@ -24,6 +26,10 @@ class User(db.Model):
                 break
             version += 1
         return new_login
+
+    def avatar(self, size):
+        return 'http://www.gravatar.com/avatar/{}?d=mm&s={}'.format(
+                md5(self.email).hexdigest(), str(size))
 
     def is_authenticated(self):
         return True
