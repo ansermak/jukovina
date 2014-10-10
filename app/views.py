@@ -98,13 +98,14 @@ def product(product_en_name):
                     file_image = request.files['image']
                     if file_image:
                         file_name = secure_filename(file_image.filename)
-                        file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
+                        file_image.save(os.path.join(
+                                pp.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
                         product_obj.image = file_name
-                #db.session.add(_prod)
-                db.session.commit()
+                if modified: db.session.commit()
                 return redirect('/{}'.format(product_obj.name_en))
             page = 'product_edit.html'
             product_form = ProductForm(obj=product_obj)
+            print product_form
             product_obj = product_form
         else:
             return redirect('/{}'.format(product_en_name))
@@ -121,7 +122,6 @@ def product(product_en_name):
 @app.route('/index')
 @login_required
 def index():
-    print '=============', app.root_path
     user = g.user
     product_list = Item.query.all()
     return render_template('index.html',
