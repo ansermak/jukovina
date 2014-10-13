@@ -97,9 +97,9 @@ def product(product_en_name):
                     modified = True
                     file_image = request.files['image']
                     if file_image:
-                        file_name = secure_filename(file_image.filename)
+                        file_name = secure_filename(transliterate(file_image.filename))
                         file_image.save(os.path.join(
-                                pp.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
+                                app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
                         product_obj.image = file_name
                 if modified: db.session.commit()
                 return redirect('/{}'.format(product_obj.name_en))

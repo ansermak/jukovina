@@ -97,7 +97,7 @@ def transliterate(string):
 	lower_case_letters = _lower_case_letters
 
 	string = string.lower()
-    
+
 	len_str = len(string)
 
 	translit_string = u""
