@@ -3,7 +3,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from forms import LoginForm, ProductForm
+from forms import LoginForm, JewelForm
 from models import User, ROLE_USER, ROLE_ADMIN, Jewel
 from datetime import datetime
 from translit import transliterate
@@ -18,9 +18,7 @@ def load_user(id):
 def berfore_request():
     g.user = current_user
 
-HAS_RIGHTS = True
-
-def item_uniq_name(name):
+def jewel_uniq_name(name):
     """Creates uniq name_en for handicraft:
     transliterates name and if such name_en exists in database
     adds underline and first free number
@@ -37,86 +35,86 @@ def item_uniq_name(name):
         rzlt = name_en
     return rzlt
 
-@app.route('/new_product', methods=['GET', 'POST'])
+@app.route('/new_jewel', methods=['GET', 'POST'])
 @login_required
-def new_product():
-    if not HAS_RIGHTS:
+def new_jewel():
+    if not g.user.is_admin():
         return render_template('parking_page.html',
                 msg=u'Нажаль, у вас немає на це дозвілу')
-    product = ProductForm()
-    if product.validate_on_submit():
-        _prod = Jewel(name=product.name.data,
-                name_en=item_uniq_name(product.name.data),
-                description=product.description.data,
+    jewel_form = JewelForm()
+    if jewel_form.validate_on_submit():
+        _jewel = Jewel(name=jewel_form.name.data,
+                name_en=jewel_uniq_name(jewel_form.name.data),
+                description=jewel_form.description.data,
                 added_by=0,
                 added_on=datetime.utcnow())
         file_image = request.files['image']
         if file_image:
             file_name = secure_filename(file_image.filename)
             file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
-            _prod.image = file_name
-        db.session.add(_prod)
+            _jewel.image = file_name
+        db.session.add(_jewel)
         db.session.commit()
-        return redirect('/{}'.format(_prod.name_en))
-    return render_template('product_edit.html',
-            product=product)
+        return redirect('/{}'.format(_jewel.name_en))
+    return render_template('jewel_edit.html',
+            jewel=jewel_form)
     
 
 @app.route('/edit/<jewel_en_name>', methods=['GET', 'POST'])
 @app.route('/<jewel_en_name>', methods=['GET', 'POST'])
 @login_required
-def product(product_en_name):
+def jewel(jewel_en_name):
     #getting data by jewel name from url
-    products = Jewel.query.filter(Jewel.name_en==product_en_name)
-    product_c = products.count()
-    if product_c == 0:
+    jewels = Jewel.query.filter(Jewel.name_en==jewel_en_name)
+    jewel_c = jewels.count()
+    if jewel_c == 0:
         return render_template('parking_page.html', 
                 msg=u'Немає такої прикраси =(')
-    elif product_c > 1:
+    elif jewel_c > 1:
         pass
-        ## log error - we have more than one item eith the same name_en
-    product_obj = products[0]
+        ## log error - we have more than one jewel eith the same name_en
+
+    jewel_obj = jewels[0]
     edit_url = request.url_rule.rule.split('/')[1]
     if edit_url == 'edit':
-        if HAS_RIGHTS:
-            product_form = ProductForm()
-            if product_form.validate_on_submit():
+        if g.user.is_admin():
+            jewel_form = JewelForm()
+            if jewel_form.validate_on_submit():
                 modified = False
-                if product_obj.name != product_form.name.data:
-                    product_obj.name=product_form.name.data
+                if jewel_obj.name != jewel_form.name.data:
+                    jewel_obj.name=jewel_form.name.data
                     modified = True
-                    product_obj.name_en=item_uniq_name(product_form.name.data)
-                if product_obj.description != product_form.description.data:
-                    product_obj.description = product_form.description.data
+                    jewel_obj.name_en=jewel_uniq_name(jewel_form.name.data)
+                if jewel_obj.description != jewel_form.description.data:
+                    jewel_obj.description = jewel_form.description.data
                     modified = True
-                if product_obj.image != product_form.image.data:
-                    if os.path.isfile(product_obj.image):
+                if jewel_obj.image != jewel_form.image.data:
+                    if os.path.isfile(jewel_obj.image):
                         os.remove(os.path.join(
                             app.root_path, 
                             app.config['ITEM_IMAGE_FOLDER'], 
-                            product_obj.image))
+                            jewel_obj.image))
                     modified = True
                     file_image = request.files['image']
                     if file_image:
                         file_name = secure_filename(transliterate(file_image.filename))
                         file_image.save(os.path.join(
                                 app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
-                        product_obj.image = file_name
+                        jewel_obj.image = file_name
                 if modified: db.session.commit()
-                return redirect('/{}'.format(product_obj.name_en))
-            page = 'product_edit.html'
-            product_form = ProductForm(obj=product_obj)
-            print product_form
-            product_obj = product_form
+                return redirect('/{}'.format(jewel_obj.name_en))
+            page = 'jewel_edit.html'
+            jewel_form = JewelForm(obj=jewel_obj)
+            print jewel_form
+            jewel_obj = jewel_form
         else:
-            return redirect('/{}'.format(product_en_name))
+            return redirect('/{}'.format(jewel_en_name))
     else:
-        page = 'product.html'
+        page = 'jewel.html'
 
     return render_template(page,
-            product = product_obj,
-            is_admin = HAS_RIGHTS,
-            link_edit="/edit/{}".format(product_en_name))
+            jewel = jewel_obj,
+            link_edit="/edit/{}".format(jewel_en_name))
 
 
 @app.route('/')
@@ -124,11 +122,11 @@ def product(product_en_name):
 @login_required
 def index():
     user = g.user
-    product_list = Jewel.query.all()
+    jewel_list = Jewel.query.all()
     return render_template('index.html',
         title ='Home',
         user = user,
-        product_list=product_list)
+        jewel_list=jewel_list)
 
 
 @app.route('/login', methods = ['GET', 'POST'])

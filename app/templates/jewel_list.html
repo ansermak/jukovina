@@ -1,7 +1,7 @@
-<div id="product_list">
-{% if product_list %}
+<div id="jewel_list">
+{% if jewel_list %}
 
-  {% for item in product_list%}
+  {% for item in jewel_list%}
   <a href="/{{item.name_en}}">
     <div style="
       border: 1px solid black;
@@ -11,7 +11,7 @@
       margin: 5px;
       width: 200px;
       ">
-      <image style="width:200px; height:200px" src="{{item.get_main_image_url()}}"/>
+      <image style="max-width:200px; max-height:200px" src="{{item.get_main_image_url()}}"/>
       {{item.name}}
       {% if item.main_image %}
         {{item.main_image}}
