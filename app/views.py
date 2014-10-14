@@ -91,7 +91,7 @@ def jewel(jewel_en_name):
                     jewel_obj.description = jewel_form.description.data
                     modified = True
                 if jewel_obj.image != jewel_form.image.data:
-                    if os.path.isfile(jewel_obj.image):
+                    if jewel_obj.image is not None and os.path.isfile(jewel_obj.image):
                         os.remove(os.path.join(
                             app.root_path, 
                             app.config['ITEM_IMAGE_FOLDER'], 
