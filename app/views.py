@@ -4,7 +4,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
 from forms import LoginForm, ProductForm
-from models import User, ROLE_USER, ROLE_ADMIN, Item
+from models import User, ROLE_USER, ROLE_ADMIN, Jewel
 from datetime import datetime
 from translit import transliterate
 from werkzeug import secure_filename
@@ -26,12 +26,12 @@ def item_uniq_name(name):
     adds underline and first free number
     """
     name_en = transliterate(name)
-    cnt = Item.query.filter(Item.name_en==name_en).count()
+    cnt = Jewel.query.filter(Jewel.name_en==name_en).count()
     if cnt > 0:
         i = 0
         while cnt > 0:
             i += 1
-            cnt = Item.query.filter(Item.name_en=='{}_{}'.format(name_en, i)).count()
+            cnt = Jewel.query.filter(Jewel.name_en=='{}_{}'.format(name_en, i)).count()
         rzlt = '{}_{}'.format(name_en, i)
     else:
         rzlt = name_en
@@ -45,7 +45,7 @@ def new_product():
                 msg=u'Нажаль, у вас немає на це дозвілу')
     product = ProductForm()
     if product.validate_on_submit():
-        _prod = Item(name=product.name.data,
+        _prod = Jewel(name=product.name.data,
                 name_en=item_uniq_name(product.name.data),
                 description=product.description.data,
                 added_by=0,
@@ -66,7 +66,7 @@ def new_product():
 @app.route('/<product_en_name>', methods=['GET', 'POST'])
 @login_required
 def product(product_en_name):
-    products = Item.query.filter(Item.name_en==product_en_name)
+    products = Jewel.query.filter(Jewel.name_en==product_en_name)
     product_c = products.count()
     if product_c == 0:
         return render_template('parking_page.html', 
@@ -123,7 +123,7 @@ def product(product_en_name):
 @login_required
 def index():
     user = g.user
-    product_list = Item.query.all()
+    product_list = Jewel.query.all()
     return render_template('index.html',
         title ='Home',
         user = user,

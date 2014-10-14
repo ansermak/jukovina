@@ -13,7 +13,7 @@ class User(db.Model):
     added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     email = db.Column(db.String(60), unique = True)
     role = db.Column(db.SmallInteger, default = ROLE_USER)
-    items = db.relationship('Item', backref='author', lazy='dynamic')
+    jewels = db.relationship('Jewel', backref='author', lazy='dynamic')
 
     @staticmethod
     def make_unique_login(login):
@@ -46,7 +46,8 @@ class User(db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.login)
 
-class Item(db.Model):
+
+class Jewel(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(120), index = True)
     name_en = db.Column(db.String(120), index = True, unique = True, nullable=False)
@@ -72,7 +73,7 @@ class Price(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     added_on = db.Column(db.DateTime)
     added_by = db.Column(db.Integer, db.ForeignKey('user.id'))
-    item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
+    jewel_id = db.Column(db.Integer, db.ForeignKey('jewel.id'))
     price = db.Column(db.Integer, default = 0)
 
     def __repr__(self):
