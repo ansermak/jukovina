@@ -4,7 +4,7 @@ from flask.ext.wtf import  Form
 from wtforms import StringField, TextAreaField, BooleanField, FileField
 from wtforms.validators import DataRequired, NoneOf
 
-class ProductForm(Form):
+class JewelForm(Form):
     name = StringField(u'Назва брошки', validators=[DataRequired(), 
         NoneOf([''], 'cannot be empt', None)])
     description = TextAreaField(u'Опис')

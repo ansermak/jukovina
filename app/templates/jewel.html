@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
     <table>
-      <tr><td>Назва товару</td><td>{{product.name}}</td></tr>
-      <tr><td>Опис товару</td><td>{{product.description}}</td></tr>
+      <tr><td>Назва товару</td><td>{{jewel.name}}</td></tr>
+      <tr><td>Опис товару</td><td>{{jewel.description}}</td></tr>
       <tr><td></td><td><img style="max-height:200px; max-width:200px;" 
-          src="{{product.get_main_image_url()}}"/></td></tr>
+          src="{{jewel.get_main_image_url()}}"/></td></tr>
     <table><br/>
-    {% if is_admin %}
+    {% if g.user.is_admin() %}
       <form action="{{link_edit}}">
         <input type="submit" value="редагувати"/>
       </form>

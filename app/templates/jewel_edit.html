@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<form action = "" method="post" name="product" enctype="multipart/form-data">
-    {{product.hidden_tag()}}
+<form action = "" method="post" name="jewel_form" enctype="multipart/form-data">
+    {{jewel.hidden_tag()}}
     <table>
-      <tr><td>Назва товару</td><td>{{product.name}}</td>
-        <td>{% for error in product.errors.name %}
+      <tr><td>Назва товару</td><td>{{jewel.name}}</td>
+        <td>{% for error in jewel.errors.name %}
                 <span style="color: red;">[{{error}}]</span>
             {% endfor %}<br>
         </td>
       </tr>
-      <tr><td>Опис товару</td><td>{{product.description}}</td>
-        <td>{% for error in product.errors.description %}
+      <tr><td>Опис товару</td><td>{{jewel.description}}</td>
+        <td>{% for error in jewel.errors.description %}
                 <span style="color: red;">[{{error}}]</span>
             {% endfor %}<br>
         </td>
       <tr><td>Зображення товару</td><td>
-          {{product.image}}
+          {{jewel.image}}
         </td>
-        <td>{% for error in product.errors.image %}
+        <td>{% for error in jewel.errors.image %}
                 <span style="color: red;">[{{error}}]</span>
             {% endfor %}<br>
         </td>

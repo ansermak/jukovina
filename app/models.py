@@ -31,6 +31,9 @@ class User(db.Model):
         return 'http://www.gravatar.com/avatar/{}?d=mm&s={}'.format(
                 md5(self.email).hexdigest(), str(size))
 
+    def is_admin(self):
+        return self.role == ROLE_ADMIN
+
     def is_authenticated(self):
         return True
 

@@ -11,6 +11,9 @@
     <div>Жуковина: <a href="/index">Home</a>
     {% if g.user.is_authenticated() %}
     | <a href="{{ url_for('user', login = g.user.login) }}">Your Profile</a>
+      {% if g.user.is_admin() %}
+    | <a href="{{ url_for('new_jewel') }}">New jewel</a>
+      {% endif %}
     | <a href="{{ url_for('logout') }}">Logout</a>
     {% endif %}</div>
     <hr>
