@@ -62,10 +62,11 @@ def new_product():
             product=product)
     
 
-@app.route('/edit/<product_en_name>', methods=['GET', 'POST'])
-@app.route('/<product_en_name>', methods=['GET', 'POST'])
+@app.route('/edit/<jewel_en_name>', methods=['GET', 'POST'])
+@app.route('/<jewel_en_name>', methods=['GET', 'POST'])
 @login_required
 def product(product_en_name):
+    #getting data by jewel name from url
     products = Jewel.query.filter(Jewel.name_en==product_en_name)
     product_c = products.count()
     if product_c == 0:
@@ -156,7 +157,10 @@ def after_login(resp):
         if login is None or login == '':
             login = resp.email.split('@')[0]
         login = User.make_unique_login(login)    
-        user = User(login = login, email = resp.email, role = ROLE_USER)
+        # if this is first user in the base (user table is empy)
+        # we give him admin status
+        status = ROLE_ADMIN if User.query.count() == 0 else ROLSE_USER
+        user = User(login = login, email = resp.email, role = status)
         db.session.add(user)
         db.session.commit()
     remember_me = False
