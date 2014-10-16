@@ -3,6 +3,7 @@ db_repository/
 app/static/item_images/
 
 app.db
+test.db
 *.pyc
 versions
 mail_settings.py
