@@ -1,4 +1,5 @@
 #!../flask/bin/python
+#-*-coding:utf-8-*-
 
 import os
 import unittest
@@ -7,14 +8,41 @@ from config import basedir
 from app import app, db
 from app.models import User, ROLE_ADMIN, ROLE_USER
 
+from flask import template_rendered
+from contextlib import contextmanager
+
+@contextmanager
+def captured_templates(app):
+    recorded = []
+    def record(sender, template, context, **extra):
+        recorded.append((template, context))
+    template_rendered.connect(record, app)
+    try:
+        yield recorded
+    finally:
+        template_rendered.disconnect(record, app)
+
 
 class TestBaseCase(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
+        self.user = User.query.filter(User.role == ROLE_USER).first()
+        self.admin = User.query.filter(User.role == ROLE_ADMIN).first()
+    
+    def login_user(self):
+        with self.app.session_transaction() as sess:
+            sess['user_id'] = self.user.id
+            sess['_fresh'] = True 
+
+    def login_admin(self):
+        with self.app.session_transaction() as sess:
+            sess['user_id'] = self.admin.id
+            sess['_fresh'] = True 
 
     def tearDown(self):
         pass
+
 
     def test_login(self):
         
@@ -24,19 +52,13 @@ class TestBaseCase(unittest.TestCase):
         self.assertIn('<a href="/login?next=', rzlt.data)
         self.assertEqual(302, rzlt.status_code)
         
-        _user = User.query.filter(User.role == ROLE_USER).first()
-        _admin = User.query.filter(User.role == ROLE_ADMIN).first()
-
         # login user
-
-        with self.app.session_transaction() as sess:
-            sess['user_id'] = _user.id
-            sess['_fresh'] = True 
-
+        
+        self.login_user()
         #checking redirect to hello_page
 
         rzlt = self.app.get('/', follow_redirects=True)
-        self.assertIn('Привет, {}'.format(_user.login), rzlt.data)
+        self.assertIn('Привет, {}'.format(self.user.login), rzlt.data)
         self.assertEqual(200, rzlt.status_code)
 
         #print rzlt.data
@@ -45,11 +67,9 @@ class TestBaseCase(unittest.TestCase):
         #print rzlt.headers
         #print rzlt. mimetype
 
-
-
 def prepare_enviroment():
     app.config['TESTING'] = True
-    app.config['CSRF'] = True
+    app.config['CSRF_ENABLED'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
     db.create_all()
     db.session.add(User(login='simple user',email='simpple@mail.com', role=ROLE_USER))
