@@ -48,7 +48,7 @@ def new_jewel():
                 description=jewel_form.description.data,
                 added_by=0,
                 added_on=datetime.utcnow())
-        file_image = request.files['image']
+        file_image = request.files.get('image', None)
         if file_image:
             file_name = secure_filename(file_image.filename)
             file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
