@@ -85,6 +85,10 @@ _lower_case_letters = {u'а': u'a',
 	}
 	
 def replace_other_chars(string):
+    """
+    >>> replace_other_chars(u'Мама мыла 4isto раму утюгом 23!')
+    u'4isto-23'
+    """
     string = re.sub(r"((?![a-zA-Z0-9\-']).)", '-', string )
     string = re.sub(r"[\-]+",'-', string)
     string = re.sub('^[-]+', '', string)

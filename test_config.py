@@ -8,10 +8,9 @@ from app.tests.base import prepare_enviroment, clean_enviroment, TestBaseCase, c
 
 BASE_DIR = 'app/tests'
 
-if __name__=='__main__':
-    prepare_enviroment()
-    suite =TestLoader().discover(BASE_DIR, pattern='test_*.py')
-    TextTestRunner(verbosity=2).run(suite)
-    clean_enviroment()
+prepare_enviroment()
+suite =TestLoader().discover(BASE_DIR, pattern='test_*.py')
+TextTestRunner(verbosity=2).run(suite)
+clean_enviroment()
 
 
