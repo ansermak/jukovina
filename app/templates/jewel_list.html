@@ -2,23 +2,12 @@
 {% if jewel_list %}
 
   {% for item in jewel_list%}
-  <a href="/{{item.name_en}}">
-    <div style="
-      border: 1px solid black;
-      display: block;
-      float: left;
-      height: 250px;
-      margin: 5px;
-      width: 200px;
-      ">
-      <image style="max-width:200px; max-height:200px" src="{{item.get_main_image_url()}}"/>
-      {{item.name}}
-      {% if item.main_image %}
-        {{item.main_image}}
-      {% endif %}
-    </div>
-  </a>
-  {%endfor%}
+
+    <a href="/{{item.name_en}}" class="jewel_icon">
+        <img src="{{item.get_main_image_url()}}" class="img_jewel_icon"/>
+        {{item.name}}
+    </a>
+ {%endfor%}
 {% else %}
 <br/>  немає описів товарів<br/>
 {% endif %}

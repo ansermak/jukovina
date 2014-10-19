@@ -5,7 +5,7 @@
       <tr><td>Опис товару</td><td>{{jewel.description}}</td></tr>
       <tr><td></td><td><img style="max-height:200px; max-width:200px;" 
           src="{{jewel.get_main_image_url()}}"/></td></tr>
-    <table><br/>
+    </table><br/>
     {% if g.user.is_admin() %}
       <form action="{{link_edit}}">
         <input type="submit" value="редагувати"/>

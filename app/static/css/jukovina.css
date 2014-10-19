@@ -1,0 +1,82 @@
+html{
+    height: 100%;
+}
+
+body{
+    color: #474747;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+#page{
+    min-height:100%;
+}
+#page_header{
+    background-color:#dbe4f3;
+    height: 200px;
+    padding: 10px;
+}
+#page_text_logo{
+    color: blue;
+    font-size: 40pt;
+    font-style: italic;
+    font-weight:600;
+}
+#head_menu{
+    text-align: center;
+    background-color: #f8f9fd;
+}
+.head_menu_item{
+    display: inline-block;
+    padding: 10px;
+    margin: 0 50px 0 0;
+    text-decoration:none;
+    color: #474797;
+    font-weight:600;
+}
+.head_menu_item:hover{
+    color: blue;
+}
+#left_menu{
+    width: 250px;
+    margin-top: 20px;
+    float: left; 
+}
+.left_menu_item{
+    background-color: #dacc45;
+    background-color: #de9641;
+    background-color: #edce98;
+    color: #54391e;
+    border-radius: 5px;
+    display: block;
+    padding: 15px;
+    margin: 0 0 10px 20px;
+}
+#main_square{
+    margin: 10px 10px 0 270px;
+}
+.jewel_icon{
+    display: block;
+    float: left;
+    width: 250px;
+    height: 270px;
+    background-color: #f5f08c;
+    border-radius:5px;
+    margin: 10px;
+    text-align: center;
+    text-decoration:none;
+}
+.img_jewel_icon{
+    max-width:240px;
+    max-height:240px;
+    margin:5px;
+}
+#page_footer{
+    background-color: #00c700;
+    background-color: #9a8222;
+    background-color: #b39e31;
+    background-color: #79922c;
+    height: 100px;
+    margin-top: -100px;
+    bottom: 0;
+}
