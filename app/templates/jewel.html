@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="div_jewel_info">
     <table>
       <tr><td>Назва товару</td><td>{{jewel.name}}</td></tr>
       <tr><td>Опис товару</td><td>{{jewel.description}}</td></tr>
@@ -11,4 +12,5 @@
         <input type="submit" value="редагувати"/>
       </form>
     {% endif %}
+</div>
 {% endblock %}

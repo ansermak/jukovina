@@ -9,27 +9,32 @@
   <body>
     <div id="page">
         <div id="page_header">
-            <div id="page_text_logo">Жуковина</div>   
+            <a href="/">
+            <img src="/static/images/main_label.png" id="img_main_logo"/>
+            </a>
         </div>
         <div id="head_menu">
-            <a href="/index/" class="head_menu_item">Home</a>
             {% if g.user.is_authenticated() %}
-                | <a class="head_menu_item" href="{{ url_for('user', login = g.user.login) }}">Your Profile</a>
-                  {% if g.user.is_admin() %}
-                | <a class="head_menu_item" href="{{ url_for('new_jewel') }}">New jewel</a>
-                  {% endif %}
-                | <a class="head_menu_item" href="{{ url_for('logout') }}">Logout</a>
+                Привет, 
+                <a class="head_menu_item" 
+                    href="{{ url_for('user', login = g.user.login) }}">
+                    {{g.user.login}}</a>
+               | <a class="head_menu_item" 
+                    href="{{ url_for('logout') }}">Logout</a>
             {% endif %}
 
         </div>
         <div id="left_menu">
-            <a href="" class="left_menu_item">Тоавры</a>
-            <a href="" class="left_menu_item">Тоавры</a>
-            <a href="" class="left_menu_item">Тоавры</a>
+            <a href="/" class="left_menu_item">Головна</a>
+            <a href="" class="left_menu_item">Товари</a>
+            <a href="" class="left_menu_item">Новини</a>
+            {% if g.user.is_admin() %}
+                <a class="left_menu_item" 
+                    href="{{ url_for('new_jewel') }}">Додати товар</a>
+            {% endif %}
         </div>
  
         <div id="main_square">
-            <hr>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             <ul>

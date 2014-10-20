@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="div_jewel_info">
 <form action = "" method="post" name="jewel_form" enctype="multipart/form-data">
     {{jewel.hidden_tag()}}
     <table>
@@ -26,4 +27,5 @@
     </table><br/>
     <input type="submit" value="Зберігти"/>
   </form>
+</div>
 {% endblock %}

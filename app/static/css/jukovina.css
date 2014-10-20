@@ -10,40 +10,43 @@ body{
 }
 #page{
     min-height:100%;
-    background-image: url('/static/images/base_background.png');
+    background-image:  url('/static/images/tape.png'),url('/static/images/base_background.png');
+    background-repeat: repeat-y, repeat;
 }
 #page_header{
     background-color:#dbe4f3;
     height: 200px;
     padding: 10px;
     background-image: url('/static/images/jeans.png');
+    text-align: center;
 }
-#page_text_logo{
-    color: #ddddff;
-    font-size: 50pt;
-    font-style: italic;
-    font-weight:600;
+#img_main_logo{
+    margin-top:60px;
 }
 #head_menu{
-    text-align: center;
+    text-align: right;
     background-color: #f8f9fd;
-    background-image: url('/static/images/jeans_line.png');
+    background-image:url('/static/images/jeans_line.png');
     height: 50px;
+    color: white;
+    font-family: Courier;
+    font-size: 25px;
+    padding-right:10px;
 }
 .head_menu_item{
     display: inline-block;
-    padding: 10px;
-    margin: 0 50px 0 0;
+    padding: 10px 0 0 0; 
+    margin: 0 ;
     text-decoration:none;
     color: white; #!474797;
-    font-weight:600;
+    font: bold italic 25px Courier;
 }
 .head_menu_item:hover{
-    color: blue;
+    color: #86a8fd;
 }
 #left_menu{
-    width: 250px;
-    margin-top: 20px;
+    width: 300px;
+    padding-top: 20px;
     float: left; 
 }
 .left_menu_item{
@@ -51,14 +54,22 @@ body{
     background-color: #de9641;
     background-color: #edce98;
     background-color: #07B00F;
+    background-color: #76dc4d;
     color: #54391e;
-    border-radius: 55px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
     display: block;
     padding: 15px;
-    margin: 0 0 10px 20px;
+    margin: 0 0 20px 20px;
+    text-decoration: none;
+    color: #2d2d2d; 33:#154403;
+    font: bold italic 25px Courier;
+}
+.left_menu_item:hover{
+    color: #268500;
 }
 #main_square{
-    margin: 10px 10px 0 270px;
+    margin: 10px 10px 0 340px;
 }
 .jewel_icon{
     display: block;
@@ -67,9 +78,12 @@ body{
     height: 270px;
     background-color: #f5f08c;
     background-color: #aFaFaD;
+    background-color: #ebf461;
     border-radius:5px;
     margin: 10px;
     text-align: center;
+    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+    text-decoration: none;
 }
 .img_jewel_icon{
     max-width:240px;
@@ -86,4 +100,17 @@ body{
     margin-top: -100px;
     bottom: 0;
     background-image: url('/static/images/jeans.png');
+}
+
+.div_jewel_info{
+    display: block;
+    background-color: #f5f08c;
+    background-color: #aFaFaD;
+    background-color: #ebf461;
+    border-radius:5px;
+    margin: 10px;
+    box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.3);
+    text-decoration: none;
+    margin: 20px 10px 10px 0;
+    padding: 10px;
 }
