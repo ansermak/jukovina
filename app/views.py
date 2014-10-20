@@ -35,7 +35,7 @@ def jewel_uniq_name(name):
         rzlt = name_en
     return rzlt
 
-@app.route('/new_jewel', methods=['GET', 'POST'])
+@app.route('/new_jewel/', methods=['GET', 'POST'])
 @login_required
 def new_jewel():
     if not g.user.is_admin():
@@ -60,8 +60,8 @@ def new_jewel():
             jewel=jewel_form)
     
 
-@app.route('/edit/<jewel_en_name>', methods=['GET', 'POST'])
-@app.route('/<jewel_en_name>', methods=['GET', 'POST'])
+@app.route('/edit/<jewel_en_name>/', methods=['GET', 'POST'])
+@app.route('/<jewel_en_name>/', methods=['GET', 'POST'])
 @login_required
 def jewel(jewel_en_name):
     #getting data by jewel name from url
@@ -118,7 +118,7 @@ def jewel(jewel_en_name):
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/index/')
 @login_required
 def index():
     user = g.user
@@ -129,7 +129,7 @@ def index():
         jewel_list=jewel_list)
 
 
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login/', methods = ['GET', 'POST'])
 @oid.loginhandler
 def login():
     if g.user is not None and g.user.is_authenticated():
