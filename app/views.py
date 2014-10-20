@@ -7,6 +7,7 @@ from forms import LoginForm, JewelForm
 from models import User, ROLE_USER, ROLE_ADMIN, Jewel
 from datetime import datetime
 from translit import transliterate
+from wand.image import Image
 from werkzeug import secure_filename
 import os
 
@@ -50,9 +51,11 @@ def new_jewel():
                 added_on=datetime.utcnow())
         file_image = request.files.get('image', None)
         if file_image:
-            file_name = secure_filename(file_image.filename)
-            file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
-            _jewel.image = file_name
+            # file_name = secure_filename(file_image.filename)
+            # file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
+            # image_resize(file_name)
+            #_jewel.image = file_name
+            _jewel.image = save_image(file_image)
         db.session.add(_jewel)
         db.session.commit()
         return redirect('/{}'.format(_jewel.name_en))
@@ -94,13 +97,20 @@ def jewel(jewel_en_name):
                             app.root_path, 
                             app.config['ITEM_IMAGE_FOLDER'], 
                             jewel_obj.image))
+
+                        os.remove(os.path.join(
+                            app.root_path, 
+                            app.config['ITEM_IMAGE_FOLDER'], 
+                            get_small_image_name(jewel_obj.image)))
+
+
                     modified = True
                     file_image = request.files['image']
                     if file_image:
-                        file_name = secure_filename(transliterate(file_image.filename))
-                        file_image.save(os.path.join(
-                                app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
-                        jewel_obj.image = file_name
+                        # file_name = secure_filename(transliterate(file_image.filename))
+                        # file_image.save(os.path.join(
+                        #         app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
+                        jewel_obj.image = save_image(file_image)
                 if modified: db.session.commit()
                 return redirect('/{}'.format(jewel_obj.name_en))
             page = 'jewel_edit.html'
@@ -199,3 +209,20 @@ def not_found_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
+
+
+
+def save_image(file_image):
+    file_name = secure_filename(file_image.filename)
+    imgsvpth = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name)
+    file_image.save(imgsvpth)
+    img = Image(filename = imgsvpth)
+    small_file_name = get_small_image_name(file_name)
+    img.resize(180, 200)
+    img.save(filename=os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], small_file_name))
+    return file_name
+
+def get_small_image_name(file_name):
+    return '_180x200.'.join(file_name.split('.'))
+    
+    
