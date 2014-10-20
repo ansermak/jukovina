@@ -66,6 +66,11 @@ class Jewel(db.Model):
     def get_main_image_url(self):
         return '/{}/{}'.format(app.config['ITEM_IMAGE_FOLDER'], self.image)
 
+    def get_small_image_url(self):
+        return '/{}/{}'.format(app.config['ITEM_IMAGE_FOLDER'], self.image.split('.')[0] + '_180x240.' + self.image.split('.')[1])    
+    # def get_small_image_url(self):
+    #     return '/{}/{}'.format(app.config['ITEM_IMAGE_FOLDER'], '_180x240.'.join(self.image.split('.'))
+
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key = True)
