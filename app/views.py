@@ -218,7 +218,9 @@ def save_image(file_image):
     file_image.save(imgsvpth)
     img = Image(filename = imgsvpth)
     small_file_name = get_small_image_name(file_name)
+
     img.resize(180, 200)
+
     img.save(filename=os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], small_file_name))
     return file_name
 
