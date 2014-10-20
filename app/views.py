@@ -1,5 +1,6 @@
 # -*-coding:utf-8-*-
 
+
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
@@ -10,6 +11,7 @@ from translit import transliterate
 from wand.image import Image
 from werkzeug import secure_filename
 import os
+from math import ceil
 
 @lm.user_loader
 def load_user(id):
@@ -218,13 +220,14 @@ def save_image(file_image):
     file_image.save(imgsvpth)
     img = Image(filename = imgsvpth)
     small_file_name = get_small_image_name(file_name)
+    aspect_ratio = 1.0 * img.height / img.width
 
-    img.resize(180, 200)
+    img.resize(250, int(ceil(250 * aspect_ratio)))
 
     img.save(filename=os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], small_file_name))
     return file_name
 
 def get_small_image_name(file_name):
-    return '_180x200.'.join(file_name.split('.'))
+    return '_small.'.join(file_name.split('.'))
     
     
