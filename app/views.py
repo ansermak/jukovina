@@ -150,6 +150,8 @@ def login():
     if form.validate_on_submit():
         session['remember_me'] = form.remember_me.data
         return oid.try_login(form.openid.data, ask_for = ['nickname', 'email'])
+
+    print dir(g.user)
     return render_template('login.html',
         title = 'Sign In',
         form = form, 

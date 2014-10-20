@@ -49,7 +49,7 @@ class TestBaseCase(unittest.TestCase):
         # redirecting to login page
 
         rzlt = self.app.get('/')
-        self.assertIn('<a href="/login?next=', rzlt.data)
+        self.assertIn('<a href="/login/?next=', rzlt.data)
         self.assertEqual(302, rzlt.status_code)
         
         # login user
@@ -58,7 +58,7 @@ class TestBaseCase(unittest.TestCase):
         #checking redirect to hello_page
 
         rzlt = self.app.get('/', follow_redirects=True)
-        self.assertIn('Привет, {}'.format(self.user.login), rzlt.data)
+        self.assertIn('{}'.format(self.user.login), rzlt.data)
         self.assertEqual(200, rzlt.status_code)
 
         #print rzlt.data

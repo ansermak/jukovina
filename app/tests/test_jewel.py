@@ -15,7 +15,7 @@ class TestJewelCase(TestBaseCase):
         # user - has no rights
         self.login_user()
         with captured_templates(app) as templates:
-            rzlt = self.app.get('/new_jewel')
+            rzlt = self.app.get('/new_jewel/')
             self.assertEqual(rzlt.status_code, 200)
             self.assertEqual(len(templates), 1)
             template, context = templates[0]
@@ -25,7 +25,7 @@ class TestJewelCase(TestBaseCase):
         # admin user - clean form
         self.login_admin()
         with captured_templates(app) as templates:
-            rzlt = self.app.get('/new_jewel')
+            rzlt = self.app.get('/new_jewel/')
             self.assertEqual(rzlt.status_code, 200)
             self.assertEqual(len(templates), 1)
             template, context = templates[0]
@@ -33,7 +33,7 @@ class TestJewelCase(TestBaseCase):
 
         #saving with empty name - should return form
         with captured_templates(app) as templates:
-            rzlt = self.app.post('/new_jewel',data=dict(
+            rzlt = self.app.post('/new_jewel/',data=dict(
                     name = '',
                     description=u'новий ювелірний вироб'
                 ))
@@ -46,7 +46,7 @@ class TestJewelCase(TestBaseCase):
 
         #saving without image
         with captured_templates(app) as templates:
-            rzlt = self.app.post('/new_jewel',data=dict(
+            rzlt = self.app.post('/new_jewel/',data=dict(
                     name=u'каблучка',
                     description=u'новий ювелірний вироб'
                 ), follow_redirects=True)

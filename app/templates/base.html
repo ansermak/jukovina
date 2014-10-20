@@ -28,7 +28,7 @@
             <a href="/" class="left_menu_item">Головна</a>
             <a href="" class="left_menu_item">Товари</a>
             <a href="" class="left_menu_item">Новини</a>
-            {% if g.user.is_admin() %}
+            {% if g.user.is_authenticated() and g.user.is_admin() %}
                 <a class="left_menu_item" 
                     href="{{ url_for('new_jewel') }}">Додати товар</a>
             {% endif %}
