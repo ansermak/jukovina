@@ -233,7 +233,8 @@ def save_image(file_image):
         file_image.filename.split('.')
         )))
 
-    file_name = secure_filename(file_image.filename)
+    file_name = image_uniq_name(file_name)
+    
     imgsvpth = os.path.join(image_dir, file_name)
     file_image.save(imgsvpth)
     
@@ -254,6 +255,24 @@ def image_resize(imgsvpth, width=250, height=250):
     img.resize(width, height)
     return img
 
+def image_uniq_name(name):
+    images_list = os.listdir(image_dir)
     
+    if name not in images_list:
+        return name
+
+    name_counter = 1
+    name_parts = name.split('.')
+    new_name = name
+
+    while new_name in images_list:
+        new_name = "{}_{}.{}".format(
+            name_parts[0],
+            str(name_counter),
+            name_parts[1])
+        name_counter += 1
+
+    return new_name
+
 
     
