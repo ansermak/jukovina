@@ -1,6 +1,5 @@
 # -*-coding:utf-8-*-
 
-
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
@@ -12,6 +11,8 @@ from wand.image import Image
 from werkzeug import secure_filename
 import os
 from math import ceil
+
+image_dir = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'])
 
 @lm.user_loader
 def load_user(id):
@@ -32,7 +33,8 @@ def jewel_uniq_name(name):
         i = 0
         while cnt > 0:
             i += 1
-            cnt = Jewel.query.filter(Jewel.name_en=='{}_{}'.format(name_en, i)).count()
+            cnt = Jewel.query.filter(Jewel.name_en=='{}_{}'.format(
+                name_en, i)).count()
         rzlt = '{}_{}'.format(name_en, i)
     else:
         rzlt = name_en
@@ -53,10 +55,6 @@ def new_jewel():
                 added_on=datetime.utcnow())
         file_image = request.files.get('image', None)
         if file_image:
-            # file_name = secure_filename(file_image.filename)
-            # file_image.save(os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
-            # image_resize(file_name)
-            #_jewel.image = file_name
             _jewel.image = save_image(file_image)
         db.session.add(_jewel)
         db.session.commit()
@@ -72,6 +70,7 @@ def jewel(jewel_en_name):
     #getting data by jewel name from url
     jewels = Jewel.query.filter(Jewel.name_en==jewel_en_name)
     jewel_c = jewels.count()
+    
     if jewel_c == 0:
         return render_template('parking_page.html', 
                 msg=u'Немає такої прикраси =(')
@@ -81,44 +80,47 @@ def jewel(jewel_en_name):
 
     jewel_obj = jewels[0]
     edit_url = request.url_rule.rule.split('/')[1]
+    
     if edit_url == 'edit':
+        
         if g.user.is_admin():
             jewel_form = JewelForm()
+            
             if jewel_form.validate_on_submit():
                 modified = False
+               
                 if jewel_obj.name != jewel_form.name.data:
                     jewel_obj.name=jewel_form.name.data
                     modified = True
                     jewel_obj.name_en=jewel_uniq_name(jewel_form.name.data)
+               
                 if jewel_obj.description != jewel_form.description.data:
                     jewel_obj.description = jewel_form.description.data
                     modified = True
+               
                 if jewel_obj.image != jewel_form.image.data:
-                    if jewel_obj.image is not None and os.path.isfile(jewel_obj.image):
-                        os.remove(os.path.join(
-                            app.root_path, 
-                            app.config['ITEM_IMAGE_FOLDER'], 
-                            jewel_obj.image))
-
-                        os.remove(os.path.join(
-                            app.root_path, 
-                            app.config['ITEM_IMAGE_FOLDER'], 
-                            get_small_image_name(jewel_obj.image)))
-
+                    if jewel_obj.image is not None and os.path.isfile(
+                        os.path.join(image_dir,jewel_obj.image)):
+                            os.remove(os.path.join(image_dir, jewel_obj.image))
+                            os.remove(os.path.join(image_dir, 
+                                get_small_image_name(jewel_obj.image)))
 
                     modified = True
+                    
                     file_image = request.files['image']
+
                     if file_image:
-                        # file_name = secure_filename(transliterate(file_image.filename))
-                        # file_image.save(os.path.join(
-                        #         app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name))
                         jewel_obj.image = save_image(file_image)
-                if modified: db.session.commit()
+
+                if modified: 
+                    db.session.commit()
+
                 return redirect('/{}'.format(jewel_obj.name_en))
+
             page = 'jewel_edit.html'
             jewel_form = JewelForm(obj=jewel_obj)
-            print jewel_form
             jewel_obj = jewel_form
+
         else:
             return redirect('/{}'.format(jewel_en_name))
     else:
@@ -146,12 +148,15 @@ def index():
 def login():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('index'))
+
     form = LoginForm()
+
     if form.validate_on_submit():
         session['remember_me'] = form.remember_me.data
-        return oid.try_login(form.openid.data, ask_for = ['nickname', 'email'])
+        return oid.try_login(form.openid.data, ask_for = [
+            'nickname',
+            'email'])
 
-    print dir(g.user)
     return render_template('login.html',
         title = 'Sign In',
         form = form, 
@@ -168,17 +173,23 @@ def after_login(resp):
         login = resp.nickname
         if login is None or login == '':
             login = resp.email.split('@')[0]
+
         login = User.make_unique_login(login)    
+
         # if this is first user in the base (user table is empy)
         # we give him admin status
         status = ROLE_ADMIN if User.query.count() == 0 else ROLSE_USER
         user = User(login = login, email = resp.email, role = status)
+        
         db.session.add(user)
         db.session.commit()
+
     remember_me = False
+
     if 'remember_me' in session:
         remember_me = session['remember_me']
         session.pop('remember_me', None)
+
     login_user(user, remember = remember_me)
     return redirect(request.args.get('next') or ulr_for('index'))
 
@@ -193,17 +204,19 @@ def logout():
 @login_required
 def user(login):
     user = User.query.filter_by(login = login).first()
+
     if user == None:
         flash('User {} not found'.format(login))
         return redirect(url_for('index'))
+    
     items = [
         {'author': user, 'body': 'Super-mega thing'}, 
         {'author': user, 'body': 'Another one'}
     ]
+
     return render_template('user.html',
         user = user,
         items = items)
-
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -214,22 +227,33 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-
-
 def save_image(file_image):
+    file_name = secure_filename('.'.join(map(
+        transliterate, 
+        file_image.filename.split('.')
+        )))
+
     file_name = secure_filename(file_image.filename)
-    imgsvpth = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], file_name)
+    imgsvpth = os.path.join(image_dir, file_name)
     file_image.save(imgsvpth)
-    img = Image(filename = imgsvpth)
+    
+    small_img = image_resize(imgsvpth)
     small_file_name = get_small_image_name(file_name)
-    aspect_ratio = 1.0 * img.height / img.width
-
-    img.resize(250, int(ceil(250 * aspect_ratio)))
-
-    img.save(filename=os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'], small_file_name))
+    small_img.save(filename=os.path.join(image_dir, small_file_name))
+    
     return file_name
 
 def get_small_image_name(file_name):
     return '_small.'.join(file_name.split('.'))
+
+def image_resize(imgsvpth, width=250, height=250):
+    img = Image(filename = imgsvpth)
+    aspect_ratio = 1.0 * img.height / img.width
+    height = int(ceil(height * aspect_ratio))
+
+    img.resize(width, height)
+    return img
+
     
+
     
