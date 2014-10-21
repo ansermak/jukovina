@@ -4,7 +4,7 @@
   {% for item in jewel_list%}
 
     <a href="/{{item.name_en}}" class="jewel_icon">
-        <img src="{{item.get_small_image_url()}}" class="img_jewel_icon"/>
+        <div><img src="{{item.get_small_image_url()}}" class="img_jewel_icon"/></div>
         <!-- <img src="{{item.get_main_image_url()}}" class="img_jewel_icon"/> -->
         {{item.name}}
     </a>

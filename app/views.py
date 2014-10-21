@@ -12,7 +12,7 @@ from werkzeug import secure_filename
 import os
 from math import ceil
 
-image_dir = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'])
+# image_dir = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'])
 
 @lm.user_loader
 def load_user(id):
