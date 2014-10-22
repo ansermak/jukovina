@@ -1,18 +1,17 @@
 # -*-coding:utf-8-*-
+import os
 
+from datetime import datetime
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
+from translit import transliterate
+
 from app import app, db, lm, oid
 from forms import LoginForm, JewelForm
 from models import User, ROLE_USER, ROLE_ADMIN, Jewel
-from datetime import datetime
-from translit import transliterate
-from wand.image import Image
-from werkzeug import secure_filename
-import os
-from math import ceil
 
-image_dir = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'])
+from basic_functions import get_small_image_name, image_dir,\
+    image_resize, image_uniq_name, save_image
 
 @lm.user_loader
 def load_user(id):
@@ -21,24 +20,6 @@ def load_user(id):
 @app.before_request
 def berfore_request():
     g.user = current_user
-
-def jewel_uniq_name(name):
-    """Creates uniq name_en for handicraft:
-    transliterates name and if such name_en exists in database
-    adds underline and first free number
-    """
-    name_en = transliterate(name)
-    cnt = Jewel.query.filter(Jewel.name_en==name_en).count()
-    if cnt > 0:
-        i = 0
-        while cnt > 0:
-            i += 1
-            cnt = Jewel.query.filter(Jewel.name_en=='{}_{}'.format(
-                name_en, i)).count()
-        rzlt = '{}_{}'.format(name_en, i)
-    else:
-        rzlt = name_en
-    return rzlt
 
 @app.route('/new_jewel/', methods=['GET', 'POST'])
 @login_required
@@ -225,54 +206,25 @@ def not_found_error(error):
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    return render_template('500.html'), 500
-
-def save_image(file_image):
-    file_name = secure_filename('.'.join(map(
-        transliterate, 
-        file_image.filename.split('.')
-        )))
-
-    file_name = image_uniq_name(file_name)
-    
-    imgsvpth = os.path.join(image_dir, file_name)
-    file_image.save(imgsvpth)
-    
-    small_img = image_resize(imgsvpth)
-    small_file_name = get_small_image_name(file_name)
-    small_img.save(filename=os.path.join(image_dir, small_file_name))
-    
-    return file_name
-
-def get_small_image_name(file_name):
-    return '_small.'.join(file_name.split('.'))
-
-def image_resize(imgsvpth, width=250, height=250):
-    img = Image(filename = imgsvpth)
-    aspect_ratio = 1.0 * img.height / img.width
-    height = int(ceil(height * aspect_ratio))
-
-    img.resize(width, height)
-    return img
-
-def image_uniq_name(name):
-    images_list = os.listdir(image_dir)
-    
-    if name not in images_list:
-        return name
-
-    name_counter = 1
-    name_parts = name.split('.')
-    new_name = name
-
-    while new_name in images_list:
-        new_name = "{}_{}.{}".format(
-            name_parts[0],
-            str(name_counter),
-            name_parts[1])
-        name_counter += 1
-
-    return new_name
+    return render_template('500.html'), 500 
 
 
-    
+# Functions
+
+def jewel_uniq_name(name):
+    """Creates uniq name_en for handicraft:
+    transliterates name and if such name_en exists in database
+    adds underline and first free number
+    """
+    name_en = transliterate(name)
+    cnt = Jewel.query.filter(Jewel.name_en==name_en).count()
+    if cnt > 0:
+        i = 0
+        while cnt > 0:
+            i += 1
+            cnt = Jewel.query.filter(Jewel.name_en=='{}_{}'.format(
+                name_en, i)).count()
+        rzlt = '{}_{}'.format(name_en, i)
+    else:
+        rzlt = name_en
+    return rzlt 

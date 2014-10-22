@@ -1,9 +1,8 @@
 from hashlib import md5
+
 from app import db, app
 
-def get_small_image_name(file_name):
-    return '_small.'.join(file_name.split('.'))
-
+from basic_functions import get_small_image_name, image_dir
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
