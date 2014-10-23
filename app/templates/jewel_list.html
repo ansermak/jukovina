@@ -4,8 +4,9 @@
   {% for item in jewel_list%}
 
     <a href="/{{item.name_en}}" class="jewel_icon">
+        {% if item.image is not none %}
         <div><img src="{{item.get_small_image_url()}}" class="img_jewel_icon"/></div>
-        <!-- <img src="{{item.get_main_image_url()}}" class="img_jewel_icon"/> -->
+        {% endif %}
         {{item.name}}
     </a>
  {%endfor%}

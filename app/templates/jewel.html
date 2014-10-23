@@ -4,8 +4,12 @@
     <table>
       <tr><td>Назва товару</td><td>{{jewel.name}}</td></tr>
       <tr><td>Опис товару</td><td>{{jewel.description}}</td></tr>
-      <tr><td></td><td><img style="max-height:200px; max-width:200px;" 
-          src="{{jewel.get_main_image_url()}}"/></td></tr>
+      <tr><td></td><td>
+        {% if jewel.image is not none %}
+        <img style="max-height:200px; max-width:200px;" 
+          src="{{jewel.get_small_image_url()}}"/>
+        {% endif %}
+        </td></tr>
     </table><br/>
     {% if g.user.is_admin() %}
       <form action="{{link_edit}}">
