@@ -1,8 +1,12 @@
+import os
 from hashlib import md5
 
 from app import db, app
 
-from basic_functions import get_small_image_name, image_dir
+image_dir = os.path.join(app.root_path, app.config['ITEM_IMAGE_FOLDER'])
+
+def get_small_image_name(file_name):
+    return '_small.'.join(file_name.split('.'))
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
